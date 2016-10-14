@@ -144,7 +144,7 @@ public class CSVData {
 	 * @return 2d array of the columns
 	 */
 	public double[][] getCols(String[] columnNames) {
-		double[][] cols = new double[data.length][data.length];
+		double[][] cols = new double[data.length][columnNames.length];
 		for (int row = 0; row < data.length; row++) {
 			for (int i = 0; i < columnNames.length; i++) {
 				double[] vals = getColumn(columnNames[i]);
