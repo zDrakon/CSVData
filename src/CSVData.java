@@ -17,6 +17,7 @@ public class CSVData {
 
 	public CSVData(String filepath, String[] columnNames, int startRow) {
 		this.filePathToCSV = filepath;
+		this.numColumns = data.length;
 
 		String dataString = readFileAsString(filepath);
 		String[] lines = dataString.split("\n");
@@ -114,11 +115,13 @@ public class CSVData {
 	 * @return values of multiple rows
 	 */
 	public double[][] getRows(int startRow, int endRow) {
-		double[][] rows = new double[data[startRow].length][data[endRow].length];
+		double[][] rows = new double[endRow - startRow][data[0].length];
 
 		for (int row = startRow; row < endRow; row++) {
+			int index = 0;
 			for (int col = 0; col < data[startRow].length; col++) {
-				rows[row][col] = data[row][col];
+				rows[index][col] = data[row][col];
+				index++;
 			}
 		}
 
@@ -146,10 +149,12 @@ public class CSVData {
 	 * @return values of multiple cols
 	 */
 	public double[][] getCols(int startCol, int endCol) {
-		double[][] cols = new double[data.length][data.length];
+		double[][] cols = new double[data.length][endCol - startCol];
 		for (int row = 0; row < data.length; row++) {
+			int index = 0;
 			for (int col = startCol; col < endCol; col++) {
-				cols[row][col] = data[row][col];
+				cols[row][index] = data[row][col];
+				index++;
 			}
 		}
 		return cols;
@@ -163,7 +168,15 @@ public class CSVData {
 	 * @return values of multiple cols
 	 */
 	public double[][] getCols(int[] colIndexes) {
-		return getCols(colIndexes[0], colIndexes[colIndexes.length - 1]);
+		double[][] cols = new double[data.length][colIndexes.length];
+		for (int row = 0; row < data.length; row++) {
+			int index = 0;
+			for (int col = colIndexes[0]; col < colIndexes[colIndexes.length - 1]; col++) {
+				cols[row][index] = col;
+			}
+		}
+
+		return cols;
 	}
 
 	/***
