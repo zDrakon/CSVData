@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.IOException;
+import java.util.Scanner;
+
 /****
  * A class to read/write numerical CSV files and allow easy access of data.
  * 
@@ -7,23 +11,48 @@
 public class CSVData {
 	private double[][] data;
 	private String[] columnNames;
+	private String filePathToCSV;
+	private int numRows;
+	private int numColumns;
 
-	public static CSVData readCSVFile(String filename, int numLinesToIgnore, String[] columnNames) {
-		return null;
+	public CSVData(String filepath, String[] columnNames, int startRow) {
+		this.filePathToCSV = filepath;
+
+		String dataString = readFileAsString(filepath);
+		String[] lines = dataString.split("\n");
+
+		// number of data points
+		int n = lines.length - startRow;
+		this.numRows = n;
+
+		// create storage for column names
+		this.columnNames = columnNames;
+
+		// create storage for data
+		this.data = new double[n][numColumns];
+		for (int i = 0; i < lines.length - startRow; i++) {
+			String line = lines[startRow + i];
+			String[] coords = line.split(",");
+			for (int j = 0; j < numColumns; j++) {
+				if (coords[j].endsWith("#"))
+					coords[j] = coords[j].substring(0, coords[j].length() - 1);
+				double val = Double.parseDouble(coords[j]);
+				data[i][j] = val;
+			}
+		}
 	}
 
-	/***
-	 * Returns a new double array for a file ignoring lines at the top. Uses the
-	 * first row as the column names. All other data is stored as doubles
-	 * 
-	 * @param filename
-	 *            the file to read
-	 * @param numLinesToIgnore
-	 *            number of lines at the top to ignore
-	 * @return a double array for that file
-	 */
-	public static CSVData readCSVFile(String filename, int numLinesToIgnore) {
-		return null;
+	private String readFileAsString(String filepath) {
+		StringBuilder output = new StringBuilder();
+		try (Scanner scanner = new Scanner(new File(filepath))) {
+			while (scanner.hasNext()) {
+				String line = scanner.nextLine();
+				output.append(line + System.getProperty("line.separator"));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return output.toString();
 	}
 
 	/***
