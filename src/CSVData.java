@@ -11,26 +11,48 @@ import java.util.Scanner;
 public class CSVData {
 	private double[][] data;
 	private String[] columnNames;
-	private String filePathToCSV;
-	private int numRows;
 	private int numColumns;
 
 	public CSVData(String filepath, String[] columnNames, int startRow) {
-		this.filePathToCSV = filepath;
-		this.numColumns = data.length;
-
 		String dataString = readFileAsString(filepath);
 		String[] lines = dataString.split("\n");
 
 		// number of data points
 		int n = lines.length - startRow;
-		this.numRows = n;
-
 		// create storage for column names
 		this.columnNames = columnNames;
 
+		this.numColumns = columnNames.length;
+
 		// create storage for data
 		this.data = new double[n][numColumns];
+
+		for (int i = 0; i < lines.length - startRow; i++) {
+			String line = lines[startRow + i];
+			String[] coords = line.split(",");
+			for (int j = 0; j < numColumns; j++) {
+				if (coords[j].endsWith("#"))
+					coords[j] = coords[j].substring(0, coords[j].length() - 1);
+				double val = Double.parseDouble(coords[j]);
+				data[i][j] = val;
+			}
+		}
+	}
+
+	public CSVData(String filepath, int startRow) {
+		String dataString = readFileAsString(filepath);
+		String[] lines = dataString.split("\n");
+
+		// number of data points
+		int n = lines.length - startRow;
+		// create storage for column names
+		this.columnNames = lines[0].split(", ");
+
+		this.numColumns = columnNames.length;
+
+		// create storage for data
+		this.data = new double[n][numColumns];
+
 		for (int i = 0; i < lines.length - startRow; i++) {
 			String line = lines[startRow + i];
 			String[] coords = line.split(",");
@@ -79,19 +101,13 @@ public class CSVData {
 	 * @return values of a column
 	 */
 	public double[] getColumn(String columnName) {
-		double[] colVals = new double[data.length];
-		int colIndex = 0;
-
 		for (int i = 0; i < columnNames.length; i++) {
 			if (columnNames[i].equals(columnName)) {
-				colIndex = i;
+				return getColumn(i);
 			}
 		}
 
-		for (int i = 0; i < data.length; i++) {
-			colVals[i] = data[i][colIndex];
-		}
-		return colVals;
+		return null;
 	}
 
 	/***
@@ -218,7 +234,7 @@ public class CSVData {
 	 */
 	public void setRow(int rowIndex, double[] vals) {
 		for (int col = 0; col < data.length; col++) {
-			data[col][rowIndex] = vals[col];
+			data[rowIndex][col] = vals[col];
 		}
 	}
 
