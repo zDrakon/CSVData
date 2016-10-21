@@ -258,4 +258,35 @@ public class CSVData {
 
 	}
 
+	/***
+	 * returns the all the magnitudes of the acceleration vectors in a csv file
+	 * 
+	 * @return a double array with all the magnitudes
+	 */
+	public double[] getAllAccelVectorMags() {
+		double[] vectorsx = this.getColumn(1);
+		double[] vectorsy = this.getColumn(2);
+		double[] vectorsz = this.getColumn(3);
+		double[] magnitudes = new double[vectorsx.length];
+
+		for (int i = 0; i < magnitudes.length; i++) {
+			magnitudes[i] = getMagnitude(vectorsx[i], vectorsy[i], vectorsz[i]);
+
+		}
+		return magnitudes;
+
+	}
+
+	/***
+	 * takes in three vectors and returns the magnitude
+	 * 
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return a double represneting the magnitude from the 3 inputs
+	 */
+	public double getMagnitude(double x, double y, double z) {
+		return Math.sqrt(x * x + y * y + z * z);
+	}
+
 }
